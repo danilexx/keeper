@@ -11,6 +11,10 @@ class Adventure extends Model {
     return ['password']
   }
 
+  static get computed () {
+    return ['hasPassword']
+  }
+
   static boot () {
     super.boot()
 
@@ -25,8 +29,16 @@ class Adventure extends Model {
     })
   }
 
-  master () {
-    return this.belongsToMany('App/Models/Master')
+  getHasPassword ({ password }) {
+    if (password) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  masters () {
+    return this.hasMany('App/Models/Master')
   }
 }
 
