@@ -1,9 +1,10 @@
 'use strict'
 const Antl = use('Antl')
 class User {
+
   get messages () {
-    console.log(Antl.currentLocale())
-    return Antl.list('validation')
+    const locale = this.ctx.antl._locale
+    return Antl.forLocale(locale).list('validation')
   }
 
   get validateAll () {
