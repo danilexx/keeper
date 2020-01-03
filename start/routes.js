@@ -16,7 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.post('users', 'UserController.store')
+Route.post('users', 'UserController.store').validator('User')
 Route.put('users/:id', 'UserController.update').middleware('auth')
 Route.group(() => {
   Route.get('users', 'UserController.index')
@@ -41,3 +41,7 @@ Route.group(() => {
   Route.resource('pending_adventures', 'PendingAdventureController')
   Route.resource('adventure_lobbies', 'AdventureLobbyCOntroller').apiOnly()
 }).middleware('auth')
+
+Route.get('/locale', ({ locale }) => {
+  return `User language is ${locale}`
+})

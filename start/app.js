@@ -16,7 +16,9 @@ const providers = [
   '@adonisjs/bodyparser/providers/BodyParserProvider',
   '@adonisjs/cors/providers/CorsProvider',
   '@adonisjs/lucid/providers/LucidProvider',
-  'adonis-acl/providers/AclProvider'
+  'adonis-acl/providers/AclProvider',
+  '@adonisjs/validator/providers/ValidatorProvider',
+  '@adonisjs/antl/providers/AntlProvider'
 ]
 
 /*
@@ -60,4 +62,28 @@ const aliases = {
 */
 const commands = []
 
-module.exports = { providers, aceProviders, aliases, commands }
+const locales = {
+  /*
+  |--------------------------------------------------------------------------
+  | Loader
+  |--------------------------------------------------------------------------
+  |
+  | The loader to be used for loading locale strings. The inbuilt loaders
+  | are `file` and `database`.
+  |
+  */
+  loader: 'file',
+
+  /*
+  |--------------------------------------------------------------------------
+  | Locale
+  |--------------------------------------------------------------------------
+  |
+  | The default locale to be used when unable to detect the user locale.
+  | Or if user locale is not supported.
+  |
+  */
+  locale: 'en'
+}
+
+module.exports = { providers, aceProviders, aliases, commands, locales }
