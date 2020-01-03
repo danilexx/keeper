@@ -12,7 +12,7 @@ class UserController {
 
   async show ({ params }) {
     const user = await User.findOrFail(params.id)
-    await user.load('file')
+    await user.loadMany(['avatar', 'masters'])
     return user
   }
 

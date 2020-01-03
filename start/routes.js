@@ -24,14 +24,6 @@ Route.group(() => {
 }).middleware(['auth', 'is:keeper_of_items'])
 Route.post('sessions', 'SessionController.store')
 
-Route.resource('permissions', 'PermissionController')
-  .apiOnly()
-  .middleware('auth')
-
-Route.resource('roles', 'RoleController')
-  .apiOnly()
-  .middleware('auth')
-
 Route.resource('items', 'ItemController')
   .apiOnly().middleware('auth', 'is:keeper_of_items').except(['index', 'show'])
 
@@ -39,5 +31,12 @@ Route.get('/items/:id', 'ItemController.show')
 Route.get('/items', 'ItemController.index')
 
 Route.resource('files', 'FileController').apiOnly()
-Route.resource('pending_friendships', 'PendingFriendshipController').apiOnly().middleware('auth')
-Route.resource('friendships', 'FriendshipController').apiOnly().middleware('auth')
+Route.group(() => {
+  Route.resource('roles', 'RoleController').apiOnly()
+  Route.resource('permissions', 'PermissionController').apiOnly()
+  Route.resource('pending_friendships', 'PendingFriendshipController').apiOnly()
+  Route.resource('friendships', 'FriendshipController').apiOnly()
+  Route.resource('masters', 'MasterController').apiOnly()
+  Route.resource('masters.adventures', 'AdventureController').apiOnly().middleware('master_auth')
+  Route.resource('pending_adventures', 'PendingAdventureController')
+}).middleware('auth')

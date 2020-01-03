@@ -1,6 +1,7 @@
 'use strict'
 
 const Friendship = use('App/Models/Friendship')
+const PendingFriendship = use('App/Models/PendingFriendship')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -48,10 +49,12 @@ class FriendshipController {
   async store ({ request, response, auth }) {
     const { user } = auth
     const { id: user1_id } = user
-    const { to_add_user_id: user2_id } = request.only(['to_add_user_id'])
+    const { to_add_user_id: user2_id, pending_friendship_id } = request.only(['to_add_user_id', 'pending_friendship_id'])
     const row1 = { user1_id, user2_id }
     const row2 = { user1_id: user2_id, user2_id: user1_id }
     const friendship = await Friendship.createMany([row1, row2])
+    const pending_friendship = await PendingFriendship.findOrFail(pending_friendship_id)
+    pending_friendship.delete()
     return friendship
   }
 

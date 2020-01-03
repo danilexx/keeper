@@ -45,15 +45,27 @@ class User extends Model {
   }
 
   pendingFriendships () {
-    return this.belongsToMany('App/Models/User', 'receiver_id', 'sender_id').pivotModel('App/Models/PendingFriendship')
+    return this.hasMany('App/Models/PendingFriendship', 'id', 'receiver_id')
+  }
+
+  pendingAdventures () {
+    return this.hasMany('App/Models/pendingAdventure', 'id', 'receiver_id')
   }
 
   friends () {
     return this.belongsToMany('App/Models/User', 'user1_id', 'user2_id').pivotModel('App/Models/Friendship')
   }
 
-  file () {
-    return this.belongsTo('App/Models/File')
+  avatar () {
+    return this.belongsTo('App/Models/File', 'avatar_id', 'id')
+  }
+
+  masters () {
+    return this.hasMany('App/Models/Master')
+  }
+
+  master () {
+    return this.hasOne('App/Models/Master')
   }
 
   static get traits () {

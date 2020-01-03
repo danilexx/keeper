@@ -1,6 +1,8 @@
 # Node modules
 node_modules
 
+yarn.lock
+
 # Adonis directory for storing tmp files
 tmp
 
@@ -9,3 +11,5 @@ tmp
 
 # The development sqlite file
 database/*.sqlite
+yarn.lock
+yarn.*

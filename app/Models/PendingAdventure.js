@@ -3,7 +3,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class PendingFriendship extends Model {
+class PendingAdventure extends Model {
   receiver () {
     return this.hasOne('App/Models/User', 'receiver_id', 'id')
   }
@@ -13,4 +13,4 @@ class PendingFriendship extends Model {
   }
 }
 
-module.exports = PendingFriendship
+module.exports = PendingAdventure

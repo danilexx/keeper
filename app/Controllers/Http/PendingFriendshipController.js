@@ -17,8 +17,19 @@ class PendingFriendshipController {
 
   async index ({ auth }) {
     const { user } = auth
-    const pendingFriends = user.pendingFriendships().fetch()
-    return pendingFriends
+    const pendingFriendships = await PendingFriendship
+      .query()
+      .where('receiver_id', user.id)
+      .with('sender', (builder) => {
+        builder.with('avatar')
+      })
+      .fetch()
+    // const pendingFriendships = await PendingFriendship.findByOrFail('receiver_id', user.id)
+    // await pendingFriendships.load('sender')
+    // await pendingFriendships.sender().load('avatar')
+    // const pendingFriendships = await user.pendingFriendships().fetch()
+    // await sender.load('avatar')
+    return pendingFriendships
   }
 }
 
