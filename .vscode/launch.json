@@ -8,7 +8,7 @@
       "runtimeExecutable": "yarn",
       "runtimeArgs": [
         "run",
-        "dev"
+        "debug"
       ],
       "port": 9229,
       "internalConsoleOptions": "openOnSessionStart"

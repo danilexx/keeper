@@ -11,6 +11,10 @@ class AdventureLobby extends Model {
   users () {
     return this.belongsToMany('App/Models/User').pivotTable('user_adventure_lobbies')
   }
+
+  masters () {
+    return this.manyThrough('App/Models/Adventure', 'masters', 'adventure_id', 'id')
+  }
 }
 
 module.exports = AdventureLobby

@@ -39,6 +39,7 @@ Route.group(() => {
   Route.resource('masters', 'MasterController').apiOnly()
   Route.resource('masters.adventures', 'AdventureController').apiOnly().middleware('master_auth')
   Route.resource('pending_adventures', 'PendingAdventureController')
+  Route.resource('adventures.characters', 'CharacterController').apiOnly().middleware('adventure_auth')
   Route.resource('adventure_lobbies', 'AdventureLobbyCOntroller').apiOnly()
 }).middleware('auth')
 

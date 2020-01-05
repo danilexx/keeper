@@ -3,7 +3,9 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
-
+const CharactersConfig = use('App/Models/CharactersConfig')
+const Character = use('App/Models/Character')
+const Adventure = use('App/Models/Adventure')
 /**
  * Resourceful controller for interacting with characters
  */
@@ -21,18 +23,6 @@ class CharacterController {
   }
 
   /**
-   * Render a form to be used for creating a new character.
-   * GET characters/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
    * Create/save a new character.
    * POST characters
    *
@@ -40,7 +30,23 @@ class CharacterController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, params, auth }) {
+    const { user } = auth
+    const { isMaster, master_id } = request
+    const { attributes, ...data } = request.only(['name', 'appearance', 'attributes', 'experience', 'lore', 'personality', 'age', 'height', 'gender', 'icon_id'])
+    const { default_gold, default_life, default_mana, default_base_experience, default_melee_experience, default_ranged_experience, default_magic_experience, default_miracle_experience } = await CharactersConfig.findByOrFail('adventure_id', params.adventures_id)
+    const toCreateChar = { ...data, life: default_life, max_life: default_life, mana: default_mana, max_mana: default_mana, gold: default_gold, adventure_id: params.adventures_id, user_id: user.id, ...(isMaster ? { master_id } : {}) }
+    const character = await Character.create(toCreateChar)
+    await character.attributes().create(attributes)
+    await character.experiences().create({
+      base_experience: default_base_experience,
+      melee_experience: default_melee_experience,
+      ranged_experience: default_ranged_experience,
+      magic_experience: default_magic_experience,
+      miracle_experience: default_miracle_experience
+    })
+    await character.load('attributes')
+    return character
   }
 
   /**
@@ -53,18 +59,6 @@ class CharacterController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing character.
-   * GET characters/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
   }
 
   /**
@@ -87,6 +81,9 @@ class CharacterController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const char = await Character.findOrFail(params.id)
+    await char.delete()
+    return { message: 'Character deleted!' }
   }
 }
 

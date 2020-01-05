@@ -40,7 +40,8 @@ const namedMiddleware = {
   guest: 'Adonis/Middleware/AllowGuestOnly',
   is: 'Adonis/Acl/Is',
   can: 'Adonis/Acl/Can',
-  master_auth: 'App/Middleware/MasterAuth'
+  master_auth: 'App/Middleware/MasterAuth',
+  adventure_auth: 'App/Middleware/AdventureAuth'
 }
 
 /*
