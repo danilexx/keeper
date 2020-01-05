@@ -8,7 +8,10 @@
     "start": "node server.js",
     "dev": "adonis serve --dev",
     "debug": "adonis serve --dev --debug",
-    "test": "node ace test"
+    "test": "node ace test",
+    "migration:run": "ENV_SILENT=true node ace migration:run",
+    "migration:status": "ENV_SILENT=true node ace migration:status",
+    "migration:rollback": "ENV_SILENT=true node ace migration:rollback"
   },
   "keywords": [
     "adonisjs",
@@ -30,7 +33,7 @@
     "@adonisjs/validator": "^5.0.6",
     "adonis-acl": "^1.1.1",
     "nodemon": "^2.0.2",
-    "pg": "^7.14.0",
+    "pg": "^7.17.0",
     "uuid": "^3.3.3"
   },
   "devDependencies": {

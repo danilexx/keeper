@@ -9,7 +9,7 @@ class ExperienceSchema extends Schema {
       table.increments()
       table.integer('character_id')
         .unsigned()
-        .refereces('id')
+        .references('id')
         .inTable('characters')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
