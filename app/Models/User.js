@@ -40,10 +40,6 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  items () {
-    return this.hasMany('App/Models/Item')
-  }
-
   pendingFriendships () {
     return this.hasMany('App/Models/PendingFriendship', 'id', 'receiver_id')
   }
@@ -66,6 +62,10 @@ class User extends Model {
 
   master () {
     return this.hasOne('App/Models/Master')
+  }
+
+  characters () {
+    return this.hasMany('App/Models/Character')
   }
 
   static get traits () {

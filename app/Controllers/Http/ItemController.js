@@ -4,6 +4,7 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 const Item = use('App/Models/Item')
+const Database = use('Database')
 /**
  * Resourceful controller for interacting with items
  */
@@ -17,8 +18,9 @@ class ItemController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index () {
-    const items = await Item.all()
+  async index ({ request }) {
+    const { master } = request
+    const items = await master.items(builder => builder.with('skills')).fetch()
     return items
   }
 
@@ -31,8 +33,21 @@ class ItemController {
    * @param {Response} ctx.response
    */
   async store ({ request, response, auth }) {
-    const data = request.only(['name', 'description', 'type', 'damage'])
-    const item = await Item.create({ ...data, user_id: auth.user.id })
+    const { master } = request
+    const { skills, ...data } = request.only([
+      'name',
+      'description',
+      'type',
+      'main_attribute',
+      'main_attribute_value',
+      'secondary_attribute',
+      'secondary_attribute_value',
+      'skills'
+    ])
+    const item = await Item.create({ ...data, master_id: master.id })
+    if (skills) {
+      await item.skills().attach(skills)
+    }
     return item
   }
 
@@ -45,8 +60,12 @@ class ItemController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params }) {
-    const item = await Item.findOrFail(params.id)
+  async show ({ params, response }) {
+    const item = await Item.find(params.id)
+    if (!item) {
+      return response.status(204).send({
+      })
+    }
     await item.load('user')
     return item
   }
@@ -61,10 +80,25 @@ class ItemController {
    * @param {View} ctx.view
    */
   async update ({ params, request, response }) {
-    const data = request.only(['name', 'description', 'type', 'user_id', 'damage'])
+    const trx = await Database.beginTransaction()
+    const { skills, ...data } = request.only([
+      'name',
+      'description',
+      'type',
+      'main_attribute',
+      'main_attribute_value',
+      'secondary_attribute',
+      'secondary_attribute_value',
+      'skills'
+    ])
     const item = await Item.find(params.id)
-    item.merge(data)
-    await item.save()
+    item.merge(data, trx)
+    if (skills) {
+      await item.skills().sync(skills, trx)
+    }
+    await item.save(trx)
+    await item.load('skills')
+    await trx.commit()
     return item
   }
 
@@ -77,10 +111,10 @@ class ItemController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
-    const item = await Item.find(params.id)
-    item.delete()
+    const item = await Item.findOrFail(params.id)
+    await item.delete()
     return {
-      ok: 'Item Deletado com Sucesso'
+      ok: 'item delete with sucess'
     }
   }
 }

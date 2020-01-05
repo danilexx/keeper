@@ -24,12 +24,6 @@ Route.group(() => {
 }).middleware(['auth', 'is:keeper_of_items'])
 Route.post('sessions', 'SessionController.store')
 
-Route.resource('items', 'ItemController')
-  .apiOnly().middleware('auth', 'is:keeper_of_items').except(['index', 'show'])
-
-Route.get('/items/:id', 'ItemController.show')
-Route.get('/items', 'ItemController.index')
-
 Route.resource('files', 'FileController').apiOnly()
 Route.group(() => {
   Route.resource('roles', 'RoleController').apiOnly()
@@ -41,6 +35,8 @@ Route.group(() => {
   Route.resource('pending_adventures', 'PendingAdventureController')
   Route.resource('adventures.characters', 'CharacterController').apiOnly().middleware('adventure_auth')
   Route.resource('adventure_lobbies', 'AdventureLobbyCOntroller').apiOnly()
+  Route.resource('masters.items', 'ItemController').apiOnly().middleware('master_auth')
+  Route.resource('masters.skills', 'SkillController').apiOnly().middleware('master_auth')
 }).middleware('auth')
 
 Route.get('/locale', ({ locale }) => {

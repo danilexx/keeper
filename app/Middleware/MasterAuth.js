@@ -11,7 +11,7 @@ class MasterAuth {
    */
   async handle ({ request, params, auth, response }, next) {
     // call next to advance the request
-    const master = await auth.user.master().with('user').where('id', params.masters_id).fetch()
+    const master = await auth.user.master().where('id', params.masters_id).fetch()
     if (master === null) {
       response.status(401).json({
         error: {

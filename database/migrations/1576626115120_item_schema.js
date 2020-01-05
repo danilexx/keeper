@@ -7,16 +7,13 @@ class ItemSchema extends Schema {
   up () {
     this.create('items', (table) => {
       table.increments()
-      table.string('name', 40).notNullable().unique()
-      table.string('description', 40).notNullable()
-      table.string('type', 20).notNullable()
-      table.integer('damage').notNullable().unsigned()
-      table.integer('user_id')
-        .unsigned()
-        .references('id')
-        .inTable('users')
-        .onUpdate('CASCADE')
-        .onDelete('SET NULL')
+      table.string('name').notNullable()
+      table.enu('main_attribute', ['strength', 'intelligence', 'agility', 'faith']).notNullable()
+      table.integer('main_attribute_value').notNullable()
+      table.enu('secondary_attribute', ['strength', 'intelligence', 'agility', 'faith'])
+      table.integer('secondary_attribute_value')
+      table.string('description').notNullable()
+      table.enu('type', ['weapon', 'acessory', 'armor', 'consumable', 'common']).notNullable()
       table.timestamps()
     })
   }
