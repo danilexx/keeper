@@ -2,7 +2,7 @@
 
 const User = use('App/Models/User')
 
-const permitedFields = ['username', 'password', 'permissions', 'roles', 'avatar_id']
+const permitedFields = ['username', 'email', 'password', 'permissions', 'roles', 'avatar_id']
 
 class UserController {
   async index () {

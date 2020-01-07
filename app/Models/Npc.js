@@ -3,7 +3,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class Character extends Model {
+class Npc extends Model {
   attributes () {
     return this.hasOne('App/Models/Attribute')
   }
@@ -12,13 +12,9 @@ class Character extends Model {
     return this.hasOne('App/Models/Experience')
   }
 
-  user () {
-    return this.belongsTo('App/Models/User')
-  }
-
   inventory () {
     return this.belongsToMany('App/Models/Item').pivotTable('inventories', 'character_id', 'id').withPivot(['quantity'])
   }
 }
 
-module.exports = Character
+module.exports = Npc

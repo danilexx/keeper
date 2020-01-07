@@ -3,6 +3,7 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 const AdventureLobby = use('App/Models/AdventureLobby')
+const Character = use('App/Models/Character')
 class AdventureAuth {
   /**
    * @param {object} ctx
@@ -12,24 +13,39 @@ class AdventureAuth {
   async handle ({ params, auth, response, request }, next) {
     const { user } = auth
     const adventure_id = params.adventures_id
-    const adventureLobby = await AdventureLobby.query().with('users', builder => {
+    request.adventure_id = adventure_id
+    const adventureLobbys = await AdventureLobby.query().with('users', builder => {
       builder.where('user_id', user.id)
     }).with('masters', builder => {
       builder.where('user_id', user.id)
     }).where('adventure_id', adventure_id).fetch()
-    if (adventureLobby.toJSON()[0] === undefined) {
+    const adventureLobby = adventureLobbys.rows[0]
+    if (adventureLobby.toJSON() === undefined) {
       return response.status(401).send({
         error: {
           message: 'Adventure not found'
         }
       })
     }
+    const masters = await adventureLobby.masters().where('user_id', user.id).fetch()
+    const master = masters.rows[0]
+    request.adventureLobby = adventureLobby
     // return response.send(adventureLobby.toJSON()[0].masters)
-    const isMasterOnAdventure = adventureLobby.toJSON()[0].masters.length > 0
-    const isUserOnAdventure = adventureLobby.toJSON()[0].users.length > 0
+    const isMasterOnAdventure = Boolean(master)
     if (isMasterOnAdventure) {
       request.isMaster = true
-      request.master_id = adventureLobby.toJSON()[0].masters[0].id
+      request.master_id = master.id
+      request.master = master
+    }
+    const users = await adventureLobby.users().fetch()
+    const user_on_adventure_instance = users.rows[0]
+    const isUserOnAdventure = Boolean(user_on_adventure_instance)
+    if (isUserOnAdventure) {
+      const user_id = user.id
+      const characters = await Character.query().where('adventure_id', adventure_id).where('user_id', user_id).fetch()
+      const character = characters.rows[0]
+      request.character_id = character.id
+      request.character = character
     }
     request.isUserOnAdventure = isUserOnAdventure
     if (!isUserOnAdventure && !isMasterOnAdventure) {

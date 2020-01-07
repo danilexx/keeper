@@ -41,7 +41,8 @@ const namedMiddleware = {
   is: 'Adonis/Acl/Is',
   can: 'Adonis/Acl/Can',
   master_auth: 'App/Middleware/MasterAuth',
-  adventure_auth: 'App/Middleware/AdventureAuth'
+  adventure_auth: 'App/Middleware/AdventureAuth',
+  is_master: 'App/Middleware/IsMaster'
 }
 
 /*

@@ -34,11 +34,15 @@ Route.group(() => {
   Route.resource('masters.adventures', 'AdventureController').apiOnly().middleware('master_auth')
   Route.resource('pending_adventures', 'PendingAdventureController')
   Route.resource('adventures.characters', 'CharacterController').apiOnly().middleware('adventure_auth')
-  Route.resource('adventure_lobbies', 'AdventureLobbyCOntroller').apiOnly()
+  Route.resource('adventure_lobbies', 'AdventureLobbyController').apiOnly()
   Route.resource('masters.items', 'ItemController').apiOnly().middleware('master_auth')
   Route.resource('masters.skills', 'SkillController').apiOnly().middleware('master_auth')
+  Route.resource('adventures.npcs', 'NpcController').apiOnly().middleware(['adventure_auth', 'is_master'])
+  Route.resource('adventures.social_messages', 'SocialMessageController').middleware('adventure_auth')
 }).middleware('auth')
 
+Route.post('passwords', 'ForgotPasswordController.store')
+Route.put('passwords', 'ForgotPasswordController.update')
 Route.get('/locale', ({ locale }) => {
   return `User language is ${locale}`
 })

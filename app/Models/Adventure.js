@@ -40,6 +40,10 @@ class Adventure extends Model {
   masters () {
     return this.hasMany('App/Models/Master')
   }
+
+  character () {
+    return this.belongsTo('App/Models/Character')
+  }
 }
 
 module.exports = Adventure
