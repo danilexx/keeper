@@ -1,11 +1,10 @@
 module.exports = {
-  extends: [
-    'standard'
-  ],
+  extends: ['standard'],
   globals: {
     use: true
   },
   rules: {
-    "camelcase": "off"
+    camelcase: 'off',
+    'space-before-function-paren': 'off'
   }
 }

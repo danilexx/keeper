@@ -4,20 +4,30 @@
 const Schema = use('Schema')
 
 class InventorySchema extends Schema {
-  up () {
-    this.create('inventories', (table) => {
+  up() {
+    this.create('inventories', table => {
       table.increments()
-      table.integer('item_id')
+      table
+        .integer('item_id')
         .unsigned()
         .references('id')
         .inTable('items')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable()
-      table.integer('character_id')
+      table
+        .integer('character_id')
         .unsigned()
         .references('id')
         .inTable('characters')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
+        .notNullable()
+      table
+        .integer('npc_id')
+        .unsigned()
+        .references('id')
+        .inTable('npcs')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable()
@@ -26,7 +36,7 @@ class InventorySchema extends Schema {
     })
   }
 
-  down () {
+  down() {
     this.drop('inventories')
   }
 }

@@ -19,8 +19,7 @@ class NpcController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index({ request, response, view }) {}
 
   /**
    * Create/save a new npc.
@@ -30,7 +29,7 @@ class NpcController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response, params, auth }) {
+  async store({ request, response, params, auth }) {
     const { user } = auth
     const { master_id } = request
     const { attributes, inventory, experiences = {}, ...data } = request.only([
@@ -56,11 +55,30 @@ class NpcController {
       default_ranged_experience_value,
       default_magic_experience_value,
       default_miracle_experience_value
-    } = await CharactersConfig.findByOrFail('adventure_id', params.adventures_id)
-    const toCreateChar = { ...data, life: default_life, max_life: default_life, mana: default_mana, max_mana: default_mana, gold: default_gold, adventure_id: params.adventures_id, user_id: user.id, master_id }
+    } = await CharactersConfig.findByOrFail(
+      'adventure_id',
+      params.adventures_id
+    )
+    const toCreateChar = {
+      ...data,
+      life: default_life,
+      max_life: default_life,
+      mana: default_mana,
+      max_mana: default_mana,
+      gold: default_gold,
+      adventure_id: params.adventures_id,
+      user_id: user.id,
+      master_id
+    }
     const npc = await Npc.create(toCreateChar)
     await npc.attributes().create(attributes)
-    const { base_experience, melee_experience, ranged_experience, magic_experience, miracle_experience } = experiences
+    const {
+      base_experience,
+      melee_experience,
+      ranged_experience,
+      magic_experience,
+      miracle_experience
+    } = experiences
     await npc.experiences().create({
       base_experience: base_experience || default_base_experience_value,
       melee_experience: melee_experience || default_melee_experience_value,
@@ -68,7 +86,9 @@ class NpcController {
       magic_experience: magic_experience || default_magic_experience_value,
       miracle_experience: miracle_experience || default_miracle_experience_value
     })
-    await inventorySync(inventory, npc)
+    if (inventory) {
+      await inventorySync(inventory, npc)
+    }
     await npc.loadMany(['attributes', 'experiences', 'inventory'])
     return npc
   }
@@ -82,8 +102,7 @@ class NpcController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show({ params, request, response, view }) {}
 
   /**
    * Render a form to update an existing npc.
@@ -94,8 +113,7 @@ class NpcController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
-  }
+  async edit({ params, request, response, view }) {}
 
   /**
    * Update npc details.
@@ -105,7 +123,7 @@ class NpcController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, auth }) {
+  async update({ params, request, auth }) {
     const { attributes, experiences, inventory, ...data } = request.only([
       'name',
       'appearance',
@@ -146,7 +164,7 @@ class NpcController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, request, response }) {
     const char = await Npc.findOrFail(params.id)
     await char.delete()
     return { message: 'Npc deleted!' }
