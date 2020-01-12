@@ -30,7 +30,7 @@ class ExceptionHandler extends BaseExceptionHandler {
       const errorJSON = await youch.toJSON()
       return response.status(error.status).send(errorJSON)
     }
-    return response.status(error.status)
+    return response.status(error.status).send(error.message)
   }
 
   /**
@@ -44,7 +44,7 @@ class ExceptionHandler extends BaseExceptionHandler {
    * @return {void}
    */
   async report(error, { request }) {
-    console.error(error)
+    console.error(error.message)
   }
 }
 
