@@ -23,7 +23,7 @@ class User extends Model {
 
   // Esconde a senha do retorno da api
   static get hidden () {
-    return ['password']
+    return ['password', 'token', 'token_created_At', 'created_at', 'updated_at']
   }
 
   /**
