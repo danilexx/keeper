@@ -23,6 +23,7 @@ Route.group(() => {
   Route.get('users/:id', 'UserController.show')
 }).middleware(['auth', 'is:keeper_of_items'])
 Route.post('sessions', 'SessionController.store')
+Route.put('sessions', 'SessionController.update')
 
 Route.resource('files', 'FileController').apiOnly()
 Route.group(() => {
