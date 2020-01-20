@@ -7,7 +7,7 @@ const Adventure = use('App/Models/Adventure')
 const Database = use('Database')
 const AdventureLobby = use('App/Models/AdventureLobby')
 const CharactersConfig = use('App/Models/CharactersConfig')
-const fields = ['name', 'password']
+const fields = ['name', 'password', 'options', 'maxPlayers']
 /**
  * Resourceful controller for interacting with adventures
  */
@@ -38,11 +38,11 @@ class AdventureController {
     // Verifica se o master pertence ao user
     const trx = await Database.beginTransaction()
     const { master } = request
-    const data = request.only(fields)
+    const { maxPlayers, options, ...data } = request.only(fields)
     const adventure = await Adventure.create({ ...data, owner_id: master.id }, trx)
     master.adventure_id = adventure.id
-    await AdventureLobby.create({ adventure_id: adventure.id }, trx)
-    await CharactersConfig.create({ adventure_id: adventure.id }, trx)
+    await AdventureLobby.create({ maxPlayers, adventure_id: adventure.id }, trx)
+    await CharactersConfig.create({ ...options, adventure_id: adventure.id }, trx)
     await master.save(trx)
     await trx.commit()
     return adventure
