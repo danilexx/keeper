@@ -42,10 +42,12 @@ Route.group(() => {
   Route.resource('adventures.social_messages', 'SocialMessageController').middleware('adventure_auth')
 }).middleware('auth')
 
+Route.get('adventures', 'AdventureController.all')
+
 Route.post('passwords', 'ForgotPasswordController.store')
 Route.put('passwords', 'ForgotPasswordController.update')
 Route.get('/locale', ({ locale }) => {
   return {
-	  message: `User language is ${locale}`
+    message: `User language is ${locale}`
   }
 })
