@@ -12,6 +12,10 @@ class Master extends Model {
     return this.hasMany('App/Models/Item')
   }
 
+  adventure () {
+    return this.belongsTo('App/Models/Adventure')
+  }
+
   skills () {
     return this.hasMany('App/Models/Skill')
   }

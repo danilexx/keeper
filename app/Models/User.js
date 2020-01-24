@@ -68,6 +68,10 @@ class User extends Model {
     return this.hasMany('App/Models/Character')
   }
 
+  masteringAdventures () {
+    return this.manyThrough('App/Models/Master', 'adventure', 'id', 'user_id')
+  }
+
   static get traits () {
     return [
       '@provider:Adonis/Acl/HasRole',

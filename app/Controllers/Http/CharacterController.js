@@ -40,7 +40,7 @@ class CharacterController {
       'appearance',
       'inventory',
       'attributes',
-      'experience',
+      'expertise',
       'lore',
       'personality',
       'age',
@@ -53,24 +53,24 @@ class CharacterController {
       default_gold,
       default_life,
       default_mana,
-      default_base_experience_value,
-      default_melee_experience_value,
-      default_ranged_experience_value,
-      default_magic_experience_value,
-      default_miracle_experience_value
+      default_base_expertise,
+      default_melee_expertise,
+      default_ranged_expertise,
+      default_magic_expertise,
+      default_miracle_expertise
     } = await CharactersConfig.findByOrFail('adventure_id', params.adventures_id)
     const toCreateChar = { ...data, life: default_life, max_life: default_life, mana: default_mana, max_mana: default_mana, gold: default_gold, adventure_id: params.adventures_id, user_id: user.id }
     const character = await Character.create(toCreateChar)
     await character.attributes().create(attributes)
-    await character.experiences().create({
-      base_experience: default_base_experience_value,
-      melee_experience: default_melee_experience_value,
-      ranged_experience: default_ranged_experience_value,
-      magic_experience: default_magic_experience_value,
-      miracle_experience: default_miracle_experience_value
+    await character.expertises().create({
+      base_expertise: default_base_expertise,
+      melee_expertise: default_melee_expertise,
+      ranged_expertise: default_ranged_expertise,
+      magic_expertise: default_magic_expertise,
+      miracle_expertise: default_miracle_expertise
     })
     await inventorySync(inventory, character)
-    await character.loadMany(['attributes', 'experiences', 'inventory'])
+    await character.loadMany(['attributes', 'expertises', 'inventory'])
     return character
   }
 
@@ -83,11 +83,11 @@ class CharacterController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, auth }) {
-    const { attributes, experiences, inventory, ...data } = request.only([
+    const { attributes, expertises, inventory, ...data } = request.only([
       'name',
       'appearance',
       'attributes',
-      'experience',
+      'expertise',
       'inventory',
       'lore',
       'personality',
@@ -107,13 +107,13 @@ class CharacterController {
     if (attributes) {
       await character.attributes().create(attributes)
     }
-    if (experiences) {
-      await character.experiences().create(experiences)
+    if (expertises) {
+      await character.expertises().create(expertises)
     }
 
     await inventorySync(inventory, character)
 
-    await character.loadMany(['attributes', 'experiences', 'inventory'])
+    await character.loadMany(['attributes', 'expertises', 'inventory'])
     return character
   }
 
