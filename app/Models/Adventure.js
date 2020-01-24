@@ -44,6 +44,14 @@ class Adventure extends Model {
   character () {
     return this.belongsTo('App/Models/Character')
   }
+
+  avatar() {
+    return this.hasOne('App/Models/File', 'avatar_id', 'id')
+  }
+
+  lobby() {
+    return this.belongsTo('App/Models/AdventureLobby', 'id', 'adventure_id')
+  }
 }
 
 module.exports = Adventure

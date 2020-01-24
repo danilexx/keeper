@@ -7,7 +7,7 @@ const Adventure = use('App/Models/Adventure')
 const Database = use('Database')
 const AdventureLobby = use('App/Models/AdventureLobby')
 const CharactersConfig = use('App/Models/CharactersConfig')
-const fields = ['name', 'password', 'options', 'maxPlayers', 'avatar_id']
+const fields = ['name', 'password', 'options', 'maxPlayers', 'description', 'avatar_id']
 /**
  * Resourceful controller for interacting with adventures
  */
@@ -21,8 +21,17 @@ class AdventureController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-    const adventures = Adventure.query().where('id', request.master.adventure_id).with('masters').fetch()
+  async index ({ request, response, auth }) {
+    const { user } = auth
+    console.log(user)
+    const adventures = await user.masteringAdventures().with('avatar').with('lobby').fetch()
+
+    return adventures
+  }
+
+  async all ({ request, response, view }) {
+    const adventures = await Adventure.query().with('avatar').with('lobby').fetch()
+    // await adventures.load('avatar')
     return adventures
   }
 
