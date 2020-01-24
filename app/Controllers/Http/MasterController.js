@@ -33,7 +33,7 @@ class MasterController {
    */
   async store ({ request, response, auth }) {
     const { user } = auth
-    const data = request.only(['name', 'icon_id'])
+    const data = request.only(['name', 'avatar_id'])
     const master = await Master.create({ ...data, user_id: user.id })
     return master
   }
