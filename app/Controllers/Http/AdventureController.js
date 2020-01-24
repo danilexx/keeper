@@ -35,11 +35,6 @@ class AdventureController {
     return adventures
   }
 
-  async all ({ request, response, view }) {
-    const adventures = Adventure.all()
-    return adventures
-  }
-
   /**
    * Create/save a new adventure.
    * POST adventures
