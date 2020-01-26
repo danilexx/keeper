@@ -7,10 +7,15 @@ const PendingFriendship = use('App/Models/PendingFriendship')
 /**
  * Resourceful controller for interacting with pendingfriendships
  */
+const User = use('App/Models/User')
+
 class PendingFriendshipController {
-  async store ({ request, auth }) {
+  async store ({ request, auth, response }) {
     const sender_id = auth.user.id
-    const { receiver_id } = request.only(['receiver_id'])
+    const { username } = request.only(['username'])
+    console.log(username, username.username)
+    const user = await User.findByOrFail('username', username.username)
+    const receiver_id = user.id
     const pendingFriendship = await PendingFriendship.create({ sender_id, receiver_id })
     return pendingFriendship
   }
