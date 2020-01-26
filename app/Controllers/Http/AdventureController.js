@@ -67,8 +67,9 @@ class AdventureController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    const adventure = await Adventure.findOrFail(params.id)
+    const adventure = await Adventure.findOrFail(params.adventures_id)
     await adventure.load('masters.user.avatar')
+    await adventure.load('lobby')
     return adventure
   }
 

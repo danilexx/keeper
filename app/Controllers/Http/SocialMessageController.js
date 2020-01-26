@@ -19,15 +19,15 @@ class SocialMessageController {
    */
   async index ({ request, response, view }) {
     const { adventureLobby } = request
-    const messages = await adventureLobby.socialMessages().setVisible(['message', 'created_at', 'id']).with('character', builder => {
+    const messages = await adventureLobby.socialMessages().setVisible(['message', 'created_at', 'id']).with('user.avatar').with('character.avatar', builder => {
       builder.setVisible(['name', 'id'])
-      builder.with('user', builder => {
-        builder.setVisible(['username', 'id'])
+      builder.with('user.avatar', builder => {
+        builder.setVisible(['username', 'id', 'avatar'])
       })
     }).with('master', builder => {
       builder.setVisible(['name', 'id'])
-      builder.with('user', builder => {
-        builder.setVisible(['username', 'id'])
+      builder.with('user.avatar', builder => {
+        builder.setVisible(['username', 'id', 'avatar'])
       })
     }).fetch()
     return messages
@@ -41,11 +41,11 @@ class SocialMessageController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, auth }) {
     const { message } = request.only(['message'])
+    const { user } = auth
     const { master_id, character_id, isMaster, adventureLobby } = request
-    console.log(character_id)
-    const adventure_lobby_id = adventureLobby.toJSON().id
+    const adventure_lobby_id = adventureLobby.id
     const getOwner = () => {
       if (isMaster) {
         return { master_id }
@@ -53,7 +53,7 @@ class SocialMessageController {
         return { character_id }
       }
     }
-    const socialMessage = await SocialMessage.create({ adventure_lobby_id, message, ...(getOwner()) })
+    const socialMessage = await SocialMessage.create({ adventure_lobby_id, message, user_id: user.id, ...(getOwner()) })
     return socialMessage
   }
 
