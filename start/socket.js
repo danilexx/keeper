@@ -16,5 +16,8 @@
 const Ws = use('Ws')
 
 Ws.channel('social:*', (data) => {
-  console.log(data)
+})
+Ws.channel('pendingFriends:*', (data) => {
+})
+Ws.channel('friendship:*', (data) => {
 })

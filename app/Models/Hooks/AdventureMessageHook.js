@@ -13,7 +13,6 @@ AdventureMessageHook.sendWs = async message => {
   const adventure_id = adventure.id
   const topic = Ws.getChannel('social:*').topic(`social:${adventure_id}`)
   if (topic) {
-    console.log('broadcasting')
     await message.load('master.user.avatar')
     await message.load('character.user.avatar')
     await message.load('user.avatar')
