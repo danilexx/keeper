@@ -16,6 +16,10 @@ class AdventureLobby extends Model {
     return this.manyThrough('App/Models/Adventure', 'masters', 'adventure_id', 'id')
   }
 
+  adventure () {
+    return this.belongsTo('App/Models/Adventure')
+  }
+
   socialMessages () {
     return this.hasMany('App/Models/SocialMessage')
   }

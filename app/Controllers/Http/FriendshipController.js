@@ -102,6 +102,7 @@ class FriendshipController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+
   }
 }
 

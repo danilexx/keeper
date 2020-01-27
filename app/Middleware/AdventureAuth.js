@@ -24,7 +24,7 @@ class AdventureAuth {
       .where('adventure_id', adventure_id)
       .fetch()
     const adventureLobby = adventureLobbys.rows[0]
-    if (adventureLobby.toJSON() === undefined) {
+    if (adventureLobby === undefined) {
       return response.status(401).send({
         error: {
           message: 'Adventure not found'

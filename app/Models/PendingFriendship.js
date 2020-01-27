@@ -4,6 +4,11 @@
 const Model = use('Model')
 
 class PendingFriendship extends Model {
+  static boot() {
+    super.boot()
+    this.addHook('afterCreate', 'PendingfriendHook.sendWs')
+  }
+
   receiver () {
     return this.hasOne('App/Models/User', 'receiver_id', 'id')
   }
