@@ -1,14 +1,13 @@
 'use strict'
 const cluster = require('cluster')
 const Env = use("Env")
-if(Env.get('NODE_ENV')==="development"){
-  if (cluster.isMaster) {
-    for (let i = 0; i < 4; i++) {
-      cluster.fork()
-    }
-    require('@adonisjs/websocket/clusterPubSub')()
-    return
+const is_dev = Env.get("NODE_ENV") === "development";
+if (cluster.isMaster) {
+  for (let i = 0; i < is_dev?4:1; i++) {
+    cluster.fork()
   }
+  require('@adonisjs/websocket/clusterPubSub')()
+  return
 }
 /*
 |--------------------------------------------------------------------------
