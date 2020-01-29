@@ -1,6 +1,5 @@
 'use strict'
 const cluster = require('cluster')
-const Env = require("Env")
 
 if (cluster.isMaster) {
   for (let i = 0; i < 4; i++) {
