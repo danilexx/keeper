@@ -14,7 +14,7 @@ class PendingFriendshipController {
     const sender_id = auth.user.id
     const { username } = request.only(['username'])
     console.log(username)
-    const user = await User.findByOrFail('username', username.username)
+    const user = await User.findByOrFail('username', username)
     const receiver_id = user.id
     const pendingFriendshipAlreadyExists = await PendingFriendship.query().where('sender_id', sender_id).where('receiver_id', receiver_id).fetch()
     const friendshipAlreadyExist = await Friendship.query().where('user1_id', receiver_id).fetch()
