@@ -2,14 +2,12 @@
 const cluster = require('cluster')
 const Env = require("Env")
 
-if(Env.get('NODE_ENV') === 'development'){
-  if (cluster.isMaster) {
-    for (let i = 0; i < 4; i++) {
-      cluster.fork()
-    }
-    require('@adonisjs/websocket/clusterPubSub')()
-    return
+if (cluster.isMaster) {
+  for (let i = 0; i < 4; i++) {
+    cluster.fork()
   }
+  require('@adonisjs/websocket/clusterPubSub')()
+  return
 }
 /*
 |--------------------------------------------------------------------------
