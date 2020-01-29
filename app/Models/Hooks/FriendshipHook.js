@@ -17,3 +17,13 @@ FriendshipHook.sendWs = async friendship => {
     topic.broadcastToAll('new:friend', user)
   }
 }
+FriendshipHook.sendWsDeletion = async friendship => {
+  const { user1_id, user2_id } = friendship
+
+  const topic = Ws.getChannel('friendship:*').topic(`friendship:${user2_id}`)
+  if (topic) {
+    const user = await User.findOrFail(user1_id)
+    await user.load('avatar')
+    topic.broadcastToAll('delete:friend', user)
+  }
+}

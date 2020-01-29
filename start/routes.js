@@ -34,7 +34,7 @@ Route.group(() => {
   Route.resource('friendships', 'FriendshipController').apiOnly()
   Route.resource('masters', 'MasterController').apiOnly()
   Route.resource('masters.adventures', 'AdventureController').apiOnly().middleware('master_auth').except(['index', 'show'])
-  Route.resource('pending_adventures', 'PendingAdventureController')
+  Route.resource('pending_adventures', 'PendingAdventureController').apiOnly()
   Route.resource('adventures.characters', 'CharacterController').apiOnly().middleware('adventure_auth')
   Route.resource('adventure_lobbies', 'AdventureLobbyController').apiOnly()
   Route.resource('masters.items', 'ItemController').apiOnly().middleware('master_auth')
