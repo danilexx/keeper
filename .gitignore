@@ -10,3 +10,4 @@ tmp
 # The development sqlite file
 database/*.sqlite
 yarn.lock
+package-lock.json
