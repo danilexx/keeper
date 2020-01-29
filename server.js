@@ -1,13 +1,5 @@
 'use strict'
-const cluster = require('cluster')
-const is_dev = process.env.NODE_ENV === "development";
-if (cluster.isMaster) {
-  for (let i = 0; i < 1; i++) {
-    cluster.fork()
-  }
-  require('@adonisjs/websocket/clusterPubSub')()
-  return
-}
+
 /*
 |--------------------------------------------------------------------------
 | Http server
