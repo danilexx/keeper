@@ -46,6 +46,12 @@ class PendingFriendshipController {
     // await sender.load('avatar')
     return pendingFriendships
   }
+
+  async destroy({ params, response }) {
+    const pendingFriendship = await PendingFriendship.findOrFail(params.id)
+    await pendingFriendship.delete()
+    return response.status(200).send({ ok: true })
+  }
 }
 
 module.exports = PendingFriendshipController
