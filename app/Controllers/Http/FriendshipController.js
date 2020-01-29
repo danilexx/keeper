@@ -101,8 +101,15 @@ class FriendshipController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
-
+  async destroy ({ params, auth, request, response }) {
+    const to_delete_user_id = params.id
+    const { user } = auth
+    const friendship1 = await Friendship.query().where('user1_id', to_delete_user_id).where('user2_id', user.id).fetch()
+    const friendship2 = await Friendship.query().where('user2_id', to_delete_user_id).where('user1_id', user.id).fetch()
+    console.log(friendship1, friendship2)
+    await friendship1.rows[0].delete()
+    await friendship2.rows[0].delete()
+    return response.status(200).send({ ok: true })
   }
 }
 
