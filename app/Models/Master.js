@@ -19,6 +19,10 @@ class Master extends Model {
   skills () {
     return this.hasMany('App/Models/Skill')
   }
+
+  avatar () {
+    return this.belongsTo('App/Models/File', 'avatar_id', 'id')
+  }
 }
 
 module.exports = Master

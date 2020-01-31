@@ -72,6 +72,10 @@ class User extends Model {
     return this.manyThrough('App/Models/Master', 'adventure', 'id', 'user_id')
   }
 
+  lobbies () {
+    return this.belongsToMany('App/Models/AdventureLobby', 'user_id', 'id').pivotTable('user_adventure_lobbies')
+  }
+
   static get traits () {
     return [
       '@provider:Adonis/Acl/HasRole',

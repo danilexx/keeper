@@ -12,7 +12,7 @@ class AdventureLobbySchema extends Schema {
         .references('id')
         .inTable('adventures')
         .onUpdate('CASCADE')
-        .onDelete('SET NULL')
+        .onDelete('CASCADE')
       table.timestamps()
     })
   }

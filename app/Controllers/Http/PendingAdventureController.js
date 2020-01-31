@@ -7,7 +7,7 @@
 /**
  * Resourceful controller for interacting with pendingadventures
  */
-
+const { adventureAuth } = use('App/Util')
 const Adventure = use('App/Models/Adventure')
 const PendingAdventure = use('App/Models/PendingAdventure')
 class PendingAdventureController {
@@ -36,11 +36,21 @@ class PendingAdventureController {
    */
   async store ({ request, response, auth }) {
     const { user } = auth
+    const { receiver_id, adventure_id, as } = request.only(['receiver_id', 'adventure_id', 'as'])
+    let isMaster = false
+    try {
+      const response = await adventureAuth(adventure_id, user)
+      isMaster = response.isMaster
+    } catch (err) {
+      console.error(err)
+    }
 
-    const { receiver_id, adventure_id } = request.only(['receiver_id', 'adventure_id'])
+    if (as === 'master' && !isMaster) {
+      return response.status(401).send({ message: "you can't invite this user to be a master if you aren't" })
+    }
     // Achando aventura
     const adventure = await Adventure.findOrFail(adventure_id)
-    const pendingAdventure = await PendingAdventure.create({ sender_id: user.id, receiver_id, adventure_id: adventure.id })
+    const pendingAdventure = await PendingAdventure.create({ sender_id: user.id, receiver_id, adventure_id: adventure.id, as })
 
     return pendingAdventure
   }
@@ -89,6 +99,9 @@ class PendingAdventureController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const pendingAdventure = await PendingAdventure.findOrFail(params.id)
+    await pendingAdventure.delete()
+    return response.status(200).send({ ok: true })
   }
 }
 
