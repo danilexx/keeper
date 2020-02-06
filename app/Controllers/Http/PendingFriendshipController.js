@@ -16,7 +16,7 @@ class PendingFriendshipController {
     const user = await User.findByOrFail('username', username)
     const receiver_id = user.id
     const pendingFriendshipAlreadyExists = await PendingFriendship.query().where('sender_id', sender_id).where('receiver_id', receiver_id).fetch()
-    const friendshipAlreadyExist = await Friendship.query().where('user1_id', receiver_id).where('user2_id').fetch()
+    const friendshipAlreadyExist = await Friendship.query().where('user1_id', receiver_id).where('user2_id', sender_id).fetch()
     const pendingFriendshipAlreadyExistsPart2 = await PendingFriendship.query().where('sender_id', receiver_id).where('receiver_id', sender_id).fetch()
     const verify = (searializer) => searializer.rows.length > 0
     if (verify(pendingFriendshipAlreadyExists) || verify(pendingFriendshipAlreadyExistsPart2) || verify(friendshipAlreadyExist)) {
