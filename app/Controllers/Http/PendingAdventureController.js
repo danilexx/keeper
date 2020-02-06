@@ -10,6 +10,7 @@
 const { adventureAuth } = use('App/Util')
 const Adventure = use('App/Models/Adventure')
 const PendingAdventure = use('App/Models/PendingAdventure')
+const User = use('App/Models/User')
 class PendingAdventureController {
   /**
    * Show a list of all pendingadventures.
@@ -22,7 +23,7 @@ class PendingAdventureController {
    */
   async index ({ request, response, auth }) {
     const { user } = auth
-    const pendingAdventures = user.pendingAdventures().with('sender.avatar').fetch()
+    const pendingAdventures = await user.pendingAdventures().with('sender.avatar').with('adventure').fetch()
     return pendingAdventures
   }
 
@@ -50,6 +51,13 @@ class PendingAdventureController {
     }
     // Achando aventura
     const adventure = await Adventure.findOrFail(adventure_id)
+    const user2 = await User.findOrFail(receiver_id)
+    const raw_lobbies = await user2.lobbies().fetch()
+    const user2_lobbies = raw_lobbies.rows
+    console.log(user2_lobbies)
+    if (user2_lobbies && user2_lobbies.some(lobby => lobby.adventure_id === adventure_id)) {
+      return response.status(400).send({ message: "you can't invite a person that is already on that adventure" })
+    }
     const pendingAdventure = await PendingAdventure.create({ sender_id: user.id, receiver_id, adventure_id: adventure.id, as })
 
     return pendingAdventure

@@ -2,7 +2,7 @@
 
 const Friendship = use('App/Models/Friendship')
 const PendingFriendship = use('App/Models/PendingFriendship')
-
+const User = use('App/Models/User')
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -22,7 +22,11 @@ class FriendshipController {
    */
   async index ({ request, response, auth }) {
     const { user } = auth
-    const friends = await user.friends().fetch()
+    const rawFriends = await User.query().with('friends', builder => {
+      builder.with('pendingAdventures')
+      builder.with('lobbies')
+    }).where('id', user.id).fetch()
+    const friends = rawFriends.rows[0].toJSON().friends
     return friends
   }
 

@@ -11,6 +11,10 @@ class PendingAdventure extends Model {
   sender () {
     return this.hasOne('App/Models/User', 'sender_id', 'id')
   }
+
+  adventure () {
+    return this.hasOne('App/Models/Adventure', 'adventure_id', 'id')
+  }
 }
 
 module.exports = PendingAdventure

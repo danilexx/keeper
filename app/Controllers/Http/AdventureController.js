@@ -44,10 +44,13 @@ class AdventureController {
   async store ({ request, response }) {
     // Verifica se o master pertence ao user
     const { master, isMaster } = request
+
     if (!isMaster) {
-      return response.status(401)
+      return response.status(401).send({ error: 'you are not master' })
     }
+    console.log('aaaa')
     const { maxPlayers, options, ...data } = request.only(fields)
+
     const adventure = await Adventure.create({ ...data, owner_id: master.id })
     master.adventure().associate(adventure)
     await adventure.lobby().create({ maxPlayers })
