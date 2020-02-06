@@ -25,6 +25,7 @@ class FriendshipController {
     const rawFriends = await User.query().with('friends', builder => {
       builder.with('pendingAdventures')
       builder.with('lobbies')
+      builder.with('masteringAdventures')
     }).where('id', user.id).fetch()
     const friends = rawFriends.rows[0].toJSON().friends
     return friends

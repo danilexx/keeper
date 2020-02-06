@@ -43,14 +43,16 @@ class AdventureLobbyController {
     }
     const adventure = await Adventure.findOrFail(pending_adventure.adventure_id)
     const adventure_lobby = await adventure.lobby().fetch()
-    const user_registry = await adventure_lobby.users().attach(user.id, null, trx)
-    let master
+    let master = null
+    let user_registry = null
     if (pending_adventure.as === 'master') {
       master = await Master.create({ name: master_name, adventure_id: adventure.id, user_id: user.id }, trx)
+    } else {
+      user_registry = await adventure_lobby.users().attach(user.id, null, trx)
     }
     await pending_adventure.delete(trx)
     trx.commit()
-    return { master: master || null, registry: user_registry }
+    return { master: master, registry: user_registry }
   }
 
   /**

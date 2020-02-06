@@ -4,6 +4,11 @@
 const Model = use('Model')
 
 class PendingAdventure extends Model {
+  static boot () {
+    super.boot()
+    this.addHook('afterCreate', 'PendingAdventureHook.sendWs')
+  }
+
   receiver () {
     return this.hasOne('App/Models/User', 'receiver_id', 'id')
   }

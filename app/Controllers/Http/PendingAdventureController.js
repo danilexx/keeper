@@ -54,7 +54,10 @@ class PendingAdventureController {
     const user2 = await User.findOrFail(receiver_id)
     const raw_lobbies = await user2.lobbies().fetch()
     const user2_lobbies = raw_lobbies.rows
-    console.log(user2_lobbies)
+    const exists = await PendingAdventure.query().where('sender_id', user.id).where('receiver_id', receiver_id).where('adventure_id', adventure_id).fetch()
+    if (exists.rows[0]) {
+      return response.status(200).send(exists)
+    }
     if (user2_lobbies && user2_lobbies.some(lobby => lobby.adventure_id === adventure_id)) {
       return response.status(400).send({ message: "you can't invite a person that is already on that adventure" })
     }
