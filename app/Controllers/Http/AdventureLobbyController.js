@@ -4,7 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 const Database = use('Database')
-const AdventureLobby = use('App/Models/AdventureLobby')
+const Adventure = use('App/Models/Adventure')
+const Master = use('App/Models/Master')
 const PendingAdventure = use('App/Models/PendingAdventure')
 /**
  * Resourceful controller for interacting with adventurelobbies
@@ -30,16 +31,28 @@ class AdventureLobbyController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, auth }) {
+  async store ({ request, auth, response }) {
     const trx = await Database.beginTransaction()
     const { user } = auth
-    const { adventure_id, pending_adventure_id } = request.only(['adventure_id', 'pending_adventure_id'])
-    const adventure_lobby = await AdventureLobby.findByOrFail('adventure_id', adventure_id, trx)
-    const user_registry = await adventure_lobby.users().attach(user.id, null, trx)
+    const { pending_adventure_id, master_name } = request.only(['adventure_id', 'pending_adventure_id', 'master_name'])
     const pending_adventure = await PendingAdventure.findOrFail(pending_adventure_id, trx)
+    if (pending_adventure.sender_id === user.id) {
+      return response.status(400).send({
+        message: 'You cant accept that invitation'
+      })
+    }
+    const adventure = await Adventure.findOrFail(pending_adventure.adventure_id)
+    const adventure_lobby = await adventure.lobby().fetch()
+    let master = null
+    let user_registry = null
+    if (pending_adventure.as === 'master') {
+      master = await Master.create({ name: master_name, adventure_id: adventure.id, user_id: user.id }, trx)
+    } else {
+      user_registry = await adventure_lobby.users().attach(user.id, null, trx)
+    }
     await pending_adventure.delete(trx)
     trx.commit()
-    return user_registry
+    return { master: master, registry: user_registry }
   }
 
   /**

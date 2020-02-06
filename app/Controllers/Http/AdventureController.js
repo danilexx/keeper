@@ -4,9 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 const Adventure = use('App/Models/Adventure')
-const Database = use('Database')
 const AdventureLobby = use('App/Models/AdventureLobby')
-const CharactersConfig = use('App/Models/CharactersConfig')
+const User = use('App/Models/User')
 const fields = ['name', 'password', 'options', 'maxPlayers', 'description', 'avatar_id']
 /**
  * Resourceful controller for interacting with adventures
@@ -23,7 +22,6 @@ class AdventureController {
    */
   async index ({ request, response, auth }) {
     const { user } = auth
-    console.log(user)
     const adventures = await user.masteringAdventures().with('avatar').with('lobby').fetch()
 
     return adventures
@@ -43,18 +41,36 @@ class AdventureController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request }) {
+  async store ({ request, response }) {
     // Verifica se o master pertence ao user
-    const trx = await Database.beginTransaction()
-    const { master } = request
+    const { master, isMaster } = request
+
+    if (!isMaster) {
+      return response.status(401).send({ error: 'you are not master' })
+    }
+    console.log('aaaa')
     const { maxPlayers, options, ...data } = request.only(fields)
-    const adventure = await Adventure.create({ ...data, owner_id: master.id }, trx)
-    master.adventure_id = adventure.id
-    await AdventureLobby.create({ maxPlayers, adventure_id: adventure.id }, trx)
-    await CharactersConfig.create({ ...options, adventure_id: adventure.id }, trx)
-    await master.save(trx)
-    await trx.commit()
+
+    const adventure = await Adventure.create({ ...data, owner_id: master.id })
+    master.adventure().associate(adventure)
+    await adventure.lobby().create({ maxPlayers })
+    await adventure.charactersConfig().create(options)
+    await master.save()
     return adventure
+  }
+
+  async private ({ auth }) {
+    const { user } = auth
+    // const adventures = Database.table('adventures').where('id', 1)
+    // const lobbies = await user.lobbies().fetch()
+    const user2 = await User.query().where('id', user.id).with('lobbies.adventure', builder => {
+      builder.with('avatar').with('lobby')
+    }).fetch()
+    const adventures = user2.toJSON().map(user => user.lobbies.map(lobby => ({ ...lobby.adventure, isMaster: false }))).flat()
+    const masteringAdventures = await user.masteringAdventures().with('avatar').with('lobby').fetch()
+    const mAdventures = masteringAdventures.toJSON().map(e => ({ ...e, isMaster: true }))
+    // console.log(lobbies)
+    return [...adventures, ...mAdventures]
   }
 
   /**

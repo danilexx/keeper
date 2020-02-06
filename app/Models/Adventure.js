@@ -50,7 +50,11 @@ class Adventure extends Model {
   }
 
   lobby() {
-    return this.belongsTo('App/Models/AdventureLobby', 'id', 'adventure_id')
+    return this.hasOne('App/Models/AdventureLobby')
+  }
+
+  charactersConfig () {
+    return this.hasOne('App/Models/CharactersConfig')
   }
 }
 

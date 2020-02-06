@@ -14,5 +14,5 @@ const inventorySync = async (inventory, character) => {
     })
   }
 }
-
-module.exports = { inventorySync }
+const adventureAuth = require('./adventureAuth')
+module.exports = { inventorySync, adventureAuth }

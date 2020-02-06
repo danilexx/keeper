@@ -19,5 +19,7 @@ Ws.channel('social:*', (data) => {
 })
 Ws.channel('pendingFriends:*', (data) => {
 })
+Ws.channel('pendingAdventures:*', (data) => {
+})
 Ws.channel('friendship:*', (data) => {
 })

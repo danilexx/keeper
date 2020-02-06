@@ -2,7 +2,7 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
-const AdventureLobby = use('App/Models/AdventureLobby')
+const Adventure = use('App/Models/Adventure')
 const Character = use('App/Models/Character')
 class AdventureAuth {
   /**
@@ -14,23 +14,26 @@ class AdventureAuth {
     const { user } = auth
     const adventure_id = params.adventures_id
     request.adventure_id = adventure_id
-    const adventureLobbys = await AdventureLobby.query()
-      .with('users', builder => {
-        builder.where('user_id', user.id)
-      })
-      .with('masters', builder => {
-        builder.where('user_id', user.id)
-      })
-      .where('adventure_id', adventure_id)
-      .fetch()
-    const adventureLobby = adventureLobbys.rows[0]
-    if (adventureLobby === undefined) {
-      return response.status(401).send({
-        error: {
-          message: 'Adventure not found'
-        }
+    const adventure = await Adventure.find(adventure_id)
+    if (!adventure) {
+      return response.status(404).send({
+        error: 'Adventure not found'
       })
     }
+    const adventureLobby = await adventure.lobby().fetch()
+    await adventureLobby.load('users.avatar')
+    await adventureLobby.load('masters.avatar')
+    // const adventureLobbys = await AdventureLobby.query()
+    //   .with('users', builder => {
+    //     builder.where('user_id', user.id)
+    //   })
+    //   .with('masters', builder => {
+    //     builder.where('user_id', user.id)
+    //   })
+    //   .where('adventure_id', adventure_id)
+    //   .fetch()
+    // const adventureLobby = adventureLobbys.rows[0]
+    // console.log(adventureLobbys)
     const masters = await adventureLobby
       .masters()
       .where('user_id', user.id)
@@ -52,7 +55,6 @@ class AdventureAuth {
       const characters = await Character.findBy('user_id', user_id)
 
       const character = characters ? characters.rows[0] : undefined
-      console.log(character)
       if (character) {
         request.character_id = character.id
         request.character = character
