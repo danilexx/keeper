@@ -56,6 +56,10 @@ class Adventure extends Model {
   charactersConfig () {
     return this.hasOne('App/Models/CharactersConfig')
   }
+
+  skills () {
+    return this.hasMany('App/Models/Skill')
+  }
 }
 
 module.exports = Adventure
