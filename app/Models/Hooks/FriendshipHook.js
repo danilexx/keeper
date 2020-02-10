@@ -15,6 +15,7 @@ FriendshipHook.sendWs = async friendship => {
     const user = await User.findOrFail(user2_id)
     await user.load('avatar')
     await user.load('pendingAdventures')
+    await user.load('masteringAdventures')
     await user.load('lobbies')
     topic.broadcastToAll('new:friend', user)
   }
