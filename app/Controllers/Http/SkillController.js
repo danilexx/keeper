@@ -20,8 +20,8 @@ class SkillController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const { master } = request
-    const skills = await master.skills().fetch()
+    const { adventure } = request
+    const skills = await adventure.skills().fetch()
     return skills
   }
 
@@ -34,9 +34,9 @@ class SkillController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const { master } = request
-    const data = request.only(['name', 'description', 'type', 'value'])
-    const skill = await Skill.create({ ...data, master_id: master.id })
+    const { master, adventure_id } = request
+    const data = request.only(['name', 'description', 'type', 'value', 'mana_cost'])
+    const skill = await Skill.create({ ...data, adventure_id, master_id: master.id })
     return skill
   }
 
