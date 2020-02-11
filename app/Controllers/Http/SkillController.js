@@ -21,7 +21,7 @@ class SkillController {
    */
   async index ({ request, response, view }) {
     const { adventure } = request
-    const skills = await adventure.skills().fetch()
+    const skills = await Skill.query().with('icon').where('adventure_id', adventure.id).fetch()
     return skills
   }
 
@@ -35,7 +35,7 @@ class SkillController {
    */
   async store ({ request, response }) {
     const { master, adventure_id } = request
-    const data = request.only(['name', 'description', 'type', 'value', 'mana_cost'])
+    const data = request.only(['name', 'description', 'type', 'value', 'mana_cost', 'icon_id'])
     const skill = await Skill.create({ ...data, adventure_id, master_id: master.id })
     return skill
   }
