@@ -4,7 +4,6 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 const Adventure = use('App/Models/Adventure')
-const AdventureLobby = use('App/Models/AdventureLobby')
 const User = use('App/Models/User')
 const fields = ['name', 'password', 'options', 'maxPlayers', 'description', 'avatar_id']
 /**
@@ -43,12 +42,7 @@ class AdventureController {
    */
   async store ({ request, response }) {
     // Verifica se o master pertence ao user
-    const { master, isMaster } = request
-
-    if (!isMaster) {
-      return response.status(401).send({ error: 'you are not master' })
-    }
-    console.log('aaaa')
+    const { master } = request
     const { maxPlayers, options, ...data } = request.only(fields)
 
     const adventure = await Adventure.create({ ...data, owner_id: master.id })
