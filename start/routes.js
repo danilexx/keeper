@@ -38,7 +38,7 @@ Route.group(() => {
   Route.resource('pending_adventures', 'PendingAdventureController').apiOnly()
   Route.resource('adventures.characters', 'CharacterController').apiOnly().middleware('adventure_auth')
   Route.resource('adventure_lobbies', 'AdventureLobbyController').apiOnly()
-  Route.resource('masters.items', 'ItemController').apiOnly().middleware('master_auth')
+  Route.resource('adventures.items', 'ItemController').apiOnly().middleware(['adventure_auth', 'is_master'])
   Route.resource('adventures.skills', 'SkillController').apiOnly().middleware(['adventure_auth', 'is_master'])
   Route.resource('adventures.npcs', 'NpcController').apiOnly().middleware(['adventure_auth', 'is_master'])
   Route.resource('adventures.social_messages', 'SocialMessageController').middleware('adventure_auth')

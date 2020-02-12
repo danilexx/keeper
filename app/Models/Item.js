@@ -11,6 +11,10 @@ class Item extends Model {
   skills () {
     return this.belongsToMany('App/Models/Skill').pivotTable('item_skill')
   }
+
+  icon() {
+    return this.hasOne('App/Models/File', 'icon_id', 'id')
+  }
 }
 
 module.exports = Item
