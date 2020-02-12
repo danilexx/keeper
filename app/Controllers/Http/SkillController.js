@@ -61,7 +61,18 @@ class SkillController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-
+    // const { master, adventure_id } = request
+    const data = request.only(['name', 'description', 'type', 'value', 'mana_cost', 'icon_id'])
+    const skill = await Skill.find(params.id)
+    if (!skill) {
+      return response.status(404).json({
+        error: {
+          message: 'skill not found'
+        }
+      })
+    }
+    await skill.merge(data)
+    return skill
   }
 
   /**
@@ -74,11 +85,11 @@ class SkillController {
    */
   async destroy ({ params, request, response }) {
     const skill = await Skill.find(params.id)
-    await skill.delete()
+    if (skill) {
+      await skill.delete()
+    }
     return {
-      ok: {
-        message: 'Skill deleted with sucess'
-      }
+      ok: true
     }
   }
 }
