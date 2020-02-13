@@ -2,7 +2,7 @@
 const cluster = require('cluster')
 
 if (cluster.isMaster) {
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 1; i++) {
     cluster.fork()
   }
   require('@adonisjs/websocket/clusterPubSub')()

@@ -12,10 +12,12 @@ AdventureMessageHook.sendWs = async message => {
   const adventure = await adventureLobby.adventure().fetch()
   const adventure_id = adventure.id
   const topic = Ws.getChannel('social:*').topic(`social:${adventure_id}`)
+  console.log(`trying to emit to social:${adventure_id}`)
   if (topic) {
     await message.load('master.user.avatar')
     await message.load('character.user.avatar')
     await message.load('user.avatar')
+    console.log(`sucessfull emitted to social:${adventure_id}`)
     topic.broadcastToAll('new:message', message)
   }
 }
