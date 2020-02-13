@@ -19,8 +19,8 @@ class ItemController {
    * @param {View} ctx.view
    */
   async index ({ request }) {
-    const { master } = request
-    const items = await master.items(builder => builder.with('skills')).fetch()
+    const { adventure_id } = request
+    const items = await Item.query().where('adventure_id', adventure_id).with('skills.icon').with('icon').fetch()
     return items
   }
 
@@ -33,7 +33,7 @@ class ItemController {
    * @param {Response} ctx.response
    */
   async store ({ request, response, auth }) {
-    const { master } = request
+    const { master, adventure_id } = request
     const { skills, ...data } = request.only([
       'name',
       'description',
@@ -42,9 +42,10 @@ class ItemController {
       'main_attribute_value',
       'secondary_attribute',
       'secondary_attribute_value',
-      'skills'
+      'skills',
+      'icon_id'
     ])
-    const item = await Item.create({ ...data, master_id: master.id })
+    const item = await Item.create({ ...data, master_id: master.id, adventure_id })
     if (skills) {
       await item.skills().attach(skills)
     }
@@ -63,7 +64,7 @@ class ItemController {
   async show ({ params, response }) {
     const item = await Item.find(params.id)
     if (!item) {
-      return response.status(204).send({
+      return response.status(404).send({
       })
     }
     await item.load('user')
@@ -89,7 +90,9 @@ class ItemController {
       'main_attribute_value',
       'secondary_attribute',
       'secondary_attribute_value',
-      'skills'
+      'skills',
+      'icon_id'
+
     ])
     const item = await Item.find(params.id)
     item.merge(data, trx)
@@ -97,8 +100,9 @@ class ItemController {
       await item.skills().sync(skills, trx)
     }
     await item.save(trx)
-    await item.load('skills')
     await trx.commit()
+    await item.load('skills.icon')
+    await item.load('icon')
     return item
   }
 

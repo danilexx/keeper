@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Skill extends Model {
+  icon() {
+    return this.hasOne('App/Models/File', 'icon_id', 'id')
+  }
 }
 
 module.exports = Skill

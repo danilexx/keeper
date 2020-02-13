@@ -2,7 +2,7 @@
 
 const File = use('App/Models/File')
 const Helpers = use('Helpers')
-
+const Cloudinary = use('App/Services/Cloudinary')
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -35,30 +35,30 @@ class FileController {
    */
   async store ({ request, response }) {
     try {
-      if (!request.file('file')) return
+      if (!request.file('file')) {
+        response.status(400).json({
+          error: {
+            message: 'file not found'
+          }
+        })
+      }
 
       const upload = request.file('file', { size: '2mb' })
-
+      const cloudinary_response = await Cloudinary.upload(upload)
       const fileName = `${Date.now()}.${upload.subtype}`
-
-      await upload.move(Helpers.tmpPath('uploads'), {
-        name: fileName
-      })
-
-      if (!upload.moved()) {
-        throw upload.error()
-      }
 
       const file = await File.create({
         file: fileName,
         name: upload.clientName,
         type: upload.type,
-        subtype: upload.subtype
+        subtype: upload.subtype,
+        url: cloudinary_response.url
       })
 
       return file
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Upload error' } })
+      console.error(err)
+      return response.status(400).send({ error: { message: 'Upload error' } })
     }
   }
 

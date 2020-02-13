@@ -20,6 +20,7 @@ class AdventureAuth {
         error: 'Adventure not found'
       })
     }
+    request.adventure = adventure
     const adventureLobby = await adventure.lobby().fetch()
     await adventureLobby.load('users.avatar')
     await adventureLobby.load('masters.avatar')
@@ -65,7 +66,7 @@ class AdventureAuth {
       return response.status(401).send({
         error: {
           message:
-            'Your not permited to create a character in this adventure lobby'
+            'Your not permited to create a anything'
         }
       })
     }
