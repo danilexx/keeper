@@ -72,6 +72,8 @@ class SkillController {
       })
     }
     await skill.merge(data)
+    await skill.save()
+    await skill.load('icon')
     return skill
   }
 

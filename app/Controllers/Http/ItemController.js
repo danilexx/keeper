@@ -100,8 +100,9 @@ class ItemController {
       await item.skills().sync(skills, trx)
     }
     await item.save(trx)
-    await item.load('skills')
     await trx.commit()
+    await item.load('skills.icon')
+    await item.load('icon')
     return item
   }
 

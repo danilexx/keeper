@@ -35,7 +35,13 @@ class FileController {
    */
   async store ({ request, response }) {
     try {
-      if (!request.file('file')) return
+      if (!request.file('file')) {
+        response.status(400).json({
+          error: {
+            message: 'file not found'
+          }
+        })
+      }
 
       const upload = request.file('file', { size: '2mb' })
       const cloudinary_response = await Cloudinary.upload(upload)
@@ -51,7 +57,8 @@ class FileController {
 
       return file
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Upload error' } })
+      console.error(err)
+      return response.status(400).send({ error: { message: 'Upload error' } })
     }
   }
 
