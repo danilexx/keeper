@@ -45,7 +45,7 @@ class User extends Model {
   }
 
   pendingAdventures () {
-    return this.hasMany('App/Models/pendingAdventure', 'id', 'receiver_id')
+    return this.hasMany('App/Models/PendingAdventure', 'id', 'receiver_id')
   }
 
   friends () {
