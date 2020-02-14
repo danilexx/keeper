@@ -95,14 +95,16 @@ class ItemController {
 
     ])
     const item = await Item.find(params.id)
-    item.merge(data, trx)
     if (skills) {
       await item.skills().sync(skills, trx)
     }
+    item.merge(data, trx)
     await item.save(trx)
     await trx.commit()
     await item.load('skills.icon')
-    await item.load('icon')
+    if (item.icon_id) {
+      await item.load('icon')
+    }
     return item
   }
 
