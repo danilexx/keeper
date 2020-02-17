@@ -16,6 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+Route.get('adventures/:id/users', 'AdventureUserController.index').middleware(['auth'])
 Route.get('masters/adventures', 'AdventureController.index').middleware('auth')
 Route.get('users/adventures', 'AdventureController.private').middleware('auth')
 Route.post('users', 'UserController.store').validator('User')

@@ -45,12 +45,20 @@ class Adventure extends Model {
     return this.belongsTo('App/Models/Character')
   }
 
+  characters () {
+    return this.hasMany('App/Models/Character')
+  }
+
   avatar() {
     return this.hasOne('App/Models/File', 'avatar_id', 'id')
   }
 
   lobby() {
     return this.hasOne('App/Models/AdventureLobby')
+  }
+
+  owner() {
+    return this.hasOne('App/Models/User', 'owner_id', 'id')
   }
 
   charactersConfig () {

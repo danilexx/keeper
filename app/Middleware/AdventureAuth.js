@@ -24,24 +24,12 @@ class AdventureAuth {
     const adventureLobby = await adventure.lobby().fetch()
     await adventureLobby.load('users.avatar')
     await adventureLobby.load('masters.avatar')
-    // const adventureLobbys = await AdventureLobby.query()
-    //   .with('users', builder => {
-    //     builder.where('user_id', user.id)
-    //   })
-    //   .with('masters', builder => {
-    //     builder.where('user_id', user.id)
-    //   })
-    //   .where('adventure_id', adventure_id)
-    //   .fetch()
-    // const adventureLobby = adventureLobbys.rows[0]
-    // console.log(adventureLobbys)
     const masters = await adventureLobby
       .masters()
       .where('user_id', user.id)
       .fetch()
     const master = masters.rows[0]
     request.adventureLobby = adventureLobby
-    // return response.send(adventureLobby.toJSON()[0].masters)
     const isMasterOnAdventure = Boolean(master)
     if (isMasterOnAdventure) {
       request.isMaster = true
