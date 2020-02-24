@@ -44,11 +44,10 @@ class AdventureController {
     // Verifica se o master pertence ao user
     const { master } = request
     const { maxPlayers, options, ...data } = request.only(fields)
-
     const adventure = await Adventure.create({ ...data, owner_id: master.id })
     master.adventure().associate(adventure)
-    await adventure.lobby().create({ maxPlayers })
-    await adventure.charactersConfig().create(options)
+    await adventure.lobby().create({ maxPlayers: maxPlayers || 1 })
+    await adventure.charactersConfig().create(options || {})
     await master.save()
     return adventure
   }
@@ -76,10 +75,23 @@ class AdventureController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-    const adventure = await Adventure.findOrFail(params.adventures_id)
+  async show ({ params, request, response, auth }) {
+    const { user } = auth
+    const { adventureLobby, adventure, isUserOnAdventure, isMaster } = request
+    const isOnAdventure = isUserOnAdventure || isMaster
+    if (!isOnAdventure && adventure.toJSON().hasPassword) {
+      return response.status(401).json({
+        error: {
+          message: 'require password'
+        }
+      })
+    }
+    if (!isOnAdventure) {
+      await adventureLobby.users().attach(user.id)
+    }
     await adventure.load('masters.user.avatar')
     await adventure.load('lobby')
+    await adventure.load('characters')
     return adventure
   }
 

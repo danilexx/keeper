@@ -15,8 +15,9 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
-
+Route.post('adventures/:adventures_id', 'PrivateAdventureController.store').middleware(['auth', 'adventure_auth:ignore'])
 Route.get('adventures/:id/users', 'AdventureUserController.index').middleware(['auth'])
+Route.delete('adventures/:adventures_id/users/:id', 'AdventureUserController.destroy').middleware(['auth', 'adventure_auth', 'is_master'])
 Route.get('masters/adventures', 'AdventureController.index').middleware('auth')
 Route.get('users/adventures', 'AdventureController.private').middleware('auth')
 Route.post('users', 'UserController.store').validator('User')
@@ -48,7 +49,7 @@ Route.group(() => {
 Route.get('adventures', 'AdventureController.all')
 Route.post('passwords', 'ForgotPasswordController.store')
 Route.put('passwords', 'ForgotPasswordController.update')
-Route.get('adventures/:adventures_id', 'AdventureController.show').middleware(['auth', 'adventure_auth'])
+Route.get('adventures/:adventures_id', 'AdventureController.show').middleware(['auth', 'adventure_auth:ignore'])
 Route.get('/locale', ({ locale }) => {
   return {
     message: `User language is ${locale}`

@@ -10,7 +10,7 @@ class AdventureAuth {
    * @param {Request} ctx.request
    * @param {Function} next
    */
-  async handle({ params, auth, response, request }, next) {
+  async handle({ params, auth, response, request }, next, properties) {
     const { user } = auth
     const adventure_id = params.adventures_id
     request.adventure_id = adventure_id
@@ -50,11 +50,15 @@ class AdventureAuth {
       }
     }
     request.isUserOnAdventure = isUserOnAdventure
+    if (properties.some(e => e === 'ignore')) {
+      await next()
+      return
+    }
     if (!isUserOnAdventure && !isMasterOnAdventure) {
       return response.status(401).send({
         error: {
           message:
-            'Your not permited to create a anything'
+            'You are not permited to acess this adventure'
         }
       })
     }

@@ -68,6 +68,15 @@ class Adventure extends Model {
   skills () {
     return this.hasMany('App/Models/Skill')
   }
+
+  async verifyPassword (password) {
+    if (this.password) {
+      const response = await Hash.verify(password, this.password)
+      return response
+    } else {
+      return true
+    }
+  }
 }
 
 module.exports = Adventure
